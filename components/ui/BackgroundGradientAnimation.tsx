@@ -1,37 +1,53 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
-const getRandomColor = () => {
-  const letters = "0123456789ABCDEF";
-  let color = "#";
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-};
+interface BackgroundGradientAnimationProps {
+  children?: React.ReactNode;
+  className?: string;
+  containerClassName?: string;
+}
 
-const BackgroundGradientAnimation: React.FC = () => {
+export function BackgroundGradientAnimation({
+  children,
+  className,
+  containerClassName,
+}: BackgroundGradientAnimationProps) {
+  const [mouseX, setMouseX] = useState(0);
+  const [mouseY, setMouseY] = useState(0);
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      const color1 = getRandomColor();
-      const color2 = getRandomColor();
-      const angle = Math.floor(Math.random() * 360);
-      document.body.style.setProperty("--gradient-color-1", color1);
-      document.body.style.setProperty("--gradient-color-2", color2);
-      document.body.style.setProperty("--gradient-angle", `${angle}deg`);
-    }, 5000);
+    const handleMouseMove = (e: MouseEvent) => {
+      setMouseX(e.clientX);
+      setMouseY(e.clientY);
+    };
 
-    // ✅ Cleanup: remove properties when component unmounts
+    window.addEventListener("mousemove", handleMouseMove);
+
     return () => {
-      clearInterval(interval);
-      document.body.style.removeProperty("--gradient-color-1");
-      document.body.style.removeProperty("--gradient-color-2");
-      document.body.style.removeProperty("--gradient-angle");
+      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
-  return null; // This component does not render anything
-};
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.body.style.setProperty("--mouse-x", `${mouseX}px`);
+      document.body.style.setProperty("--mouse-y", `${mouseY}px`);
+    }
+  }, [mouseX, mouseY]);
 
-export default BackgroundGradientAnimation;
+  return (
+    <div className={cn("relative", containerClassName)}>
+      <div
+        className={cn(
+          "pointer-events-none fixed inset-0 z-[-1] h-full w-full",
+          className
+        )}
+      >
+        <div className="absolute inset-0 bg-gradient-radial from-purple-500 to-transparent opacity-30"></div>
+      </div>
+      {children}
+    </div>
+  );
+}
