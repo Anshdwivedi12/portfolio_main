@@ -41,38 +41,6 @@ export const BackgroundGradientAnimation = ({
   const [tgY, setTgY] = useState(0);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      document.body.style.setProperty(
-        "--gradient-background-start",
-        gradientBackgroundStart
-      );
-      document.body.style.setProperty(
-        "--gradient-background-end",
-        gradientBackgroundEnd
-      );
-      document.body.style.setProperty("--first-color", firstColor);
-      document.body.style.setProperty("--second-color", secondColor);
-      document.body.style.setProperty("--third-color", thirdColor);
-      document.body.style.setProperty("--fourth-color", fourthColor);
-      document.body.style.setProperty("--fifth-color", fifthColor);
-      document.body.style.setProperty("--pointer-color", pointerColor);
-      document.body.style.setProperty("--size", size);
-      document.body.style.setProperty("--blending-value", blendingValue);
-    }
-  }, [
-    gradientBackgroundStart,
-    gradientBackgroundEnd,
-    firstColor,
-    secondColor,
-    thirdColor,
-    fourthColor,
-    fifthColor,
-    pointerColor,
-    size,
-    blendingValue,
-  ]);
-
-  useEffect(() => {
     function move() {
       if (!interactiveRef.current) return;
       setCurX(curX + (tgX - curX) / 20);
@@ -104,6 +72,18 @@ export const BackgroundGradientAnimation = ({
         "w-full h-full absolute overflow-hidden top-0 left-0 bg-[linear-gradient(40deg,var(--gradient-background-start),var(--gradient-background-end))]",
         containerClassName
       )}
+      style={{
+        ["--gradient-background-start" as any]: gradientBackgroundStart,
+        ["--gradient-background-end" as any]: gradientBackgroundEnd,
+        ["--first-color" as any]: firstColor,
+        ["--second-color" as any]: secondColor,
+        ["--third-color" as any]: thirdColor,
+        ["--fourth-color" as any]: fourthColor,
+        ["--fifth-color" as any]: fifthColor,
+        ["--pointer-color" as any]: pointerColor,
+        ["--size" as any]: size,
+        ["--blending-value" as any]: blendingValue,
+      }}
     >
       <svg className="hidden">
         <defs>
